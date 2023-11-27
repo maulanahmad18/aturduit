@@ -7,8 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-
-
+import com.example.aturduit.ui.theme.HalamanPendapatan
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -22,6 +21,12 @@ fun NavigationHost() {
         }
         composable("HalamanRegister") {
             HalamanRegister().ShowRegister()
+        }
+        composable("HalamanPendapatan"){
+            HalamanPendapatan().ShowHalamanPendapatan()
+        }
+        composable("HalamanPengeluaran"){
+            HalamanPengeluaran().ShowHalamanPengeluaran()
         }
         // Tambahkan tujuan lainnya di sini
     }

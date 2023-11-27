@@ -11,20 +11,20 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.aturduit.ui.theme.AturduitTheme
 
-class HalamanUtama {
+class HalamanUtama(val navController: NavController) {
     @Composable
-    fun MainScreen (){
+    fun ShowHalamanUtama (riwayat: List<Riwayat>){
+        val total = riwayat.sumBy { it.jumlah }
         Column(
             modifier =  Modifier
                 .padding(10.dp)
@@ -32,16 +32,16 @@ class HalamanUtama {
             Header()
             // Grafik
             Text(
-                text = "Jumlah uang anda : 0",
+                text = "Jumlah uang anda : $total",
             ) //Saldo anda
             Row (
                 modifier = Modifier
                     .padding(3.dp)
             ){
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = { navController.navigate("HalamanPendapatan")}) {
                     Text(text = "Tambah Pemasukan")
                 }
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = { navController.navigate("HalamanPengeluaran")}) {
                     Text(text = "Tambah Pengeluaran")
                 }
             }
@@ -121,3 +121,4 @@ class HalamanUtama {
         Riwayat(jumlah = 300000, tanggal = "2023-11-29")
     )
 }
+

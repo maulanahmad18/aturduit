@@ -182,7 +182,7 @@ class HalamanPendapatan {
     @OptIn(ExperimentalMaterial3Api::class)
 
     @Composable
-    public fun ShowHalaman() {
+    public fun ShowHalamanPendapatan() {
         var input by remember { mutableStateOf("") }
         val operation = ArrayList<String>()
         val colourBase = 0xFF090D15

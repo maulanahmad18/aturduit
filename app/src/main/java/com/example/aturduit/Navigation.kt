@@ -20,13 +20,16 @@ fun NavigationHost() {
             HalamanLogin(navController).showLogin()
         }
         composable("HalamanRegister") {
-            HalamanRegister().ShowRegister()
+            HalamanRegister(navController).ShowRegister()
         }
         composable("HalamanPendapatan"){
             HalamanPendapatan().ShowHalamanPendapatan()
         }
         composable("HalamanPengeluaran"){
             HalamanPengeluaran().ShowHalamanPengeluaran()
+        }
+        composable("HalamanUtama"){
+            HalamanUtama(navController).ShowHalamanUtama(RiwayatPendapatan.riwayatPendapatan)
         }
         // Tambahkan tujuan lainnya di sini
     }

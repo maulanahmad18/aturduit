@@ -26,8 +26,8 @@ import com.example.aturduit.ui.theme.AturduitTheme
 
 class HalamanUtama(val navController: NavController) {
     @Composable
-    fun ShowHalamanUtama (riwayat: List<Riwayat>){
-        val total = riwayat.sumBy { it.jumlah }
+    fun ShowHalamanUtama (riwayat: List<RiwayatPendapatan>){
+        val total = "120000000"//riwayat.sumBy { it.nominal }
         Column(
             modifier =  Modifier
                 .padding(10.dp)
@@ -67,7 +67,7 @@ class HalamanUtama(val navController: NavController) {
     }
 
     @Composable
-    fun RiwayatList(riwayat: List<Riwayat>) {
+    fun RiwayatList(riwayat: List<RiwayatPendapatan>) {
         if (riwayat.isNotEmpty()) {
             LazyColumn {
                 items(riwayat) { riwayatItem ->
@@ -83,7 +83,7 @@ class HalamanUtama(val navController: NavController) {
 
     @Composable
     fun RiwayatCard(
-        riwayatItem: Riwayat
+        riwayatItem: RiwayatPendapatan
     ){
 
         Card (
@@ -96,7 +96,7 @@ class HalamanUtama(val navController: NavController) {
             ){
                 Column (modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "${riwayatItem.jumlah}",
+                        text = "${riwayatItem.nominal}",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -117,18 +117,6 @@ class HalamanUtama(val navController: NavController) {
             }
         }
     }
-    data class Riwayat(
-        val jumlah: Int,
-        val tanggal: String
-    )
 
-    val riwayat = listOf(
-        Riwayat(jumlah = 100000, tanggal = "2023-11-27"),
-        Riwayat(jumlah = 200000, tanggal = "2023-11-28"),
-        Riwayat(jumlah = 200000, tanggal = "2023-11-28"),
-        Riwayat(jumlah = 200000, tanggal = "2023-11-28"),
-        Riwayat(jumlah = 200000, tanggal = "2023-11-28"),
-        Riwayat(jumlah = 300000, tanggal = "2023-11-29")
-    )
 }
 

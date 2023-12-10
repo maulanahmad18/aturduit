@@ -1,5 +1,6 @@
 package com.example.aturduit
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,17 +31,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.database.FirebaseDatabase
 
-class HalamanLogin (val navController: NavController){
+
+class HalamanLogin(val navController: NavController) {
+
+
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-
-
     fun showLogin() {
-        var nim by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
+//        var nim by remember { mutableStateOf("") }
+//        var password by remember { mutableStateOf("") }
         var showDialog by remember { mutableStateOf(false) }
         var dialogMessage by remember { mutableStateOf("") }
+
+        BackHandler {
+        }
 
         Box(
             modifier = Modifier
@@ -94,6 +101,14 @@ class HalamanLogin (val navController: NavController){
                     ) {
                         Button(
                             onClick = {
+                                validateLogin(nim, password) { success, message ->
+                                    if (success) {
+                                        navController.navigate("HalamanUtama")
+                                    } else {
+                                        dialogMessage = message
+                                        showDialog = true
+                                    }
+                                }
                             },
                             modifier = Modifier
                                 .weight(1f)
@@ -111,9 +126,7 @@ class HalamanLogin (val navController: NavController){
                             }
                         }
                         Button(
-                            onClick = {navController.navigate("HalamanRegister")
-
-                            },
+                            onClick = { navController.navigate("HalamanRegister") },
                             modifier = Modifier
                                 .weight(1f)
                                 .height(48.dp),
@@ -131,7 +144,30 @@ class HalamanLogin (val navController: NavController){
         }
     }
 
+    private fun validateLogin(nim: String, password: String, onResult: (Boolean, String) -> Unit) {
+        // Periksa apakah NIM atau Password kosong
+        if (nim.isEmpty() || password.isEmpty()) {
+            onResult(false, "Nim dan Password tidak boleh kosong!")
+            return
+        }
+        val database = FirebaseDatabase.getInstance("https://aturduit-f3099-default-rtdb.firebaseio.com/")
+        val myRef = database.getReference("users")
 
+        myRef.child(nim).get().addOnSuccessListener { dataSnapshot ->
+            if (dataSnapshot.exists()) {
+                val userPassword = dataSnapshot.child("password").value.toString()
+                if (password == userPassword) {
+                    onResult(true, "")
+                } else {
+                    onResult(false, "Nim atau Password anda salah!")
+                }
+            } else {
+                onResult(false, "Nim atau Password anda salah!")
+            }
+        }.addOnFailureListener {
+            onResult(false, "Error: ${it.message}")
+        }
+    }
 
 
 
@@ -148,4 +184,8 @@ class HalamanLogin (val navController: NavController){
             }
         )
     }
+
+
+
+
 }

@@ -38,23 +38,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
 import com.example.aturduit.R
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import java.util.Date
 
-class HalamanPendapatan {
+class HalamanPendapatan (val navController: NavController){
 
 
     //FireBase
     data class Pendapatan(
         val nominal: String,
         val catatan: String,
-        val tanggal: String
+        val tanggal: String,
+        val toString: String
     )
-    // Write a message to the database
-    val database = Firebase.database
-    val myRef = database.getReference("Transaksi")
+    val database = Firebase.database("https://aturduit-f3099-default-rtdb.firebaseio.com/")
+    val myRef = database.getReference("Pendapatan")
 
 
     @Composable
@@ -218,6 +219,7 @@ class HalamanPendapatan {
                         .padding(end = 20.dp)
                         .clickable {
 
+
                         },
 
 
@@ -226,7 +228,11 @@ class HalamanPendapatan {
                         text = "Kembali",
                         color = Color.White, // Warna teks di dalam persegi panjang
                         fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Start // Posisi teks di tengah persegi panjang
+                        textAlign = TextAlign.Start, // Posisi teks di tengah persegi panjang
+                        modifier = Modifier.clickable {
+                            navController.navigate("HalamanUtama")
+
+                        }
 
                     )
 
@@ -234,37 +240,53 @@ class HalamanPendapatan {
 
                 Row(
                     modifier = Modifier
-
-                        .padding(start = 310.dp)
-                        .clickable {
-//                            when {
-//                                input.isNotEmpty() && selectedCategory.isNotEmpty() -> {
-//                                    val pendapatan = Pendapatan(input, catatanText, tanggal.toString())
-//                                    myRef.child(input).setValue(pendapatan).addOnCompleteListener { task ->
-//                                        if (task.isSuccessful) {
-//                                            dialogMessage = "Transaksi berhasil disimpan!"
-//                                        } else {
-//                                            dialogMessage = "Gagal menyimpan transaksi!"
-//                                        }
-//                                        showDialog = true
-//                                    }
-//                                }
-//                                input.isEmpty() -> {
-//                                    dialogMessage = "Nominal tidak boleh kosong!"
-//                                    showDialog = true
-//                                }
-//                            }
-                        },
+                        .fillMaxWidth()
+                        .padding(start = 310.dp),
                     horizontalArrangement = Arrangement.End
                 ) {
                     Text(
                         text = "Simpan",
-                        color = Color.White, // Warna teks di dalam persegi panjang
+                        color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center // Posisi teks di tengah persegi panjang
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.clickable {
+                            val pendapatann = Pendapatan(
+                                input,
+                                catatanText,
+                                tanggal.toString(),
+                                tanggal.toString()
+                            )
 
+                            myRef.child(input).setValue(pendapatann).addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    // Tampilkan pop-up berhasil
+                                    showDialog = true
+                                    dialogMessage = "Pencatatan berhasil!"
+                                    input  = ""
+                                    catatanText = ""
+                                } else {
+                                    // Tampilkan pop-up gagal
+                                    showDialog = true
+                                    dialogMessage = "Pencatatan gagal!"
+                                }
+                            }
+                        }
                     )
+                }
 
+                // ... (unchanged code)
+
+                if (showDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showDialog = false },
+                        title = { Text("Informasi") },
+                        text = { Text(dialogMessage) },
+                        confirmButton = {
+                            Button(onClick = { showDialog = false }) {
+                                Text("OK")
+                            }
+                        }
+                    )
                 }
 
             }
@@ -451,20 +473,11 @@ class HalamanPendapatan {
             }
 
         }
-        if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text("Informasi") },
-                text = { Text(dialogMessage) },
-                confirmButton = {
-                    Button(onClick = { showDialog = false }) {
-                        Text("OK")
-                    }
-                }
-            )
-        }
+
 
     }
 
 
 }
+
+

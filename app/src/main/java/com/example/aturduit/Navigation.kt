@@ -23,10 +23,10 @@ fun NavigationHost() {
             HalamanRegister(navController).ShowRegister()
         }
         composable("HalamanPendapatan"){
-            HalamanPendapatan().ShowHalamanPendapatan()
+            HalamanPendapatan(navController).ShowHalamanPendapatan()
         }
         composable("HalamanPengeluaran"){
-            HalamanPengeluaran().ShowHalamanPengeluaran()
+            HalamanPengeluaran(navController).ShowHalamanPengeluaran()
         }
         composable("HalamanUtama"){
             HalamanUtama(navController).ShowHalamanUtama(RiwayatPendapatan.riwayatPendapatan)
@@ -34,4 +34,3 @@ fun NavigationHost() {
         // Tambahkan tujuan lainnya di sini
     }
 }
-

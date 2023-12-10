@@ -28,9 +28,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.google.firebase.Firebase
+import com.google.firebase.database.database
 
-
-class HalamanRegister {
+data class User (
+    val username: String,
+    val nim: String,
+    val password: String,
+)
+class HalamanRegister (val navController: NavController) {
+    val database = Firebase.database("https://aturduit-f3099-default-rtdb.firebaseio.com/")
+    val myRef = database.getReference("users")
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun ShowRegister() {
@@ -99,7 +108,17 @@ class HalamanRegister {
                     ) {
                         Button(
                             onClick = { /* TODO: Handle register */
+                                val user = User(username, nim, password)
+                                // Menyimpan data ke Firebase
+                                myRef.child(nim).setValue(user).addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        // Navigasi ke halaman selanjutnya atau tampilkan pesan sukses
+                                        navController.navigate("HalamanLogin")
+                                    } else {
+                                        // Menangani kegagalan
 
+                                    }
+                                }
 
                             },
                             modifier = Modifier

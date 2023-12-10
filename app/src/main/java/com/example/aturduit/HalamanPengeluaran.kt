@@ -38,8 +38,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
+import com.google.firebase.Firebase
+import com.google.firebase.database.database
+import java.util.Date
 
-class HalamanPengeluaran {
+class HalamanPengeluaran (val navController: NavController){
+
+
+    //FireBase
+    data class Pengeluaran(
+        val nominal: String,
+        val catatan: String,
+        val kategori: String,
+        val tanggal: String
+    )
+    val database = Firebase.database("https://aturduit-f3099-default-rtdb.firebaseio.com/")
+    val myRef = database.getReference("Pengeluaran")
 
     @Composable
     fun CalculatorButton(
@@ -179,6 +194,7 @@ class HalamanPengeluaran {
         var selectedCategory by remember { mutableStateOf("") }
         var showDialog by remember { mutableStateOf(false) }
         var dialogMessage by remember { mutableStateOf("") }
+        var tanggal = Date()
 
 
 
@@ -215,7 +231,11 @@ class HalamanPengeluaran {
                         text = "Kembali",
                         color = Color.White, // Warna teks di dalam persegi panjang
                         fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Start // Posisi teks di tengah persegi panjang
+                        textAlign = TextAlign.Start, // Posisi teks di tengah persegi panjang
+                        modifier = Modifier.clickable {
+                            navController.navigate("HalamanUtama")
+
+                        }
 
                     )
 
@@ -223,21 +243,55 @@ class HalamanPengeluaran {
 
                 Row(
                     modifier = Modifier
-
-                        .padding(start = 310.dp)
-                        .clickable {
-
-                        },
+                        .fillMaxWidth()
+                        .padding(start = 310.dp),
                     horizontalArrangement = Arrangement.End
                 ) {
                     Text(
                         text = "Simpan",
-                        color = Color.White, // Warna teks di dalam persegi panjang
+                        color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center // Posisi teks di tengah persegi panjang
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.clickable {
+                            val penngeluaran = Pengeluaran(input, catatanText, selectedCategory,tanggal.toString())
 
+                            if (input == "" || selectedCategory == "" || selectedCategory == "Cancelled"){
+                                // Tampilkan pop-up gagal
+                                showDialog = true
+                                dialogMessage = "Pencatatan gagal!"
+
+                            }else{
+                                myRef.child(input).setValue(penngeluaran).addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        // Tampilkan pop-up berhasil
+                                        showDialog = true
+                                        dialogMessage = "Pencatatan berhasil!"
+                                        input  = ""
+                                        catatanText = ""
+                                    } else {
+                                        // Tampilkan pop-up gagal
+                                        showDialog = true
+                                        dialogMessage = "Pencatatan gagal!"
+                                    }
+                                }
+                            }
+                        }
                     )
+                }
 
+                // ... (unchanged code)
+
+                if (showDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showDialog = false },
+                        title = { Text("Informasi") },
+                        text = { Text(dialogMessage) },
+                        confirmButton = {
+                            Button(onClick = { showDialog = false }) {
+                                Text("OK")
+                            }
+                        }
+                    )
                 }
 
             }
